@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # =================================================================================================
-# description:  Fedora 42+ setup script
+# description:  Fedora 42 setup script
 # author:       Victor Miti <https://github.com/engineervix>
 # url:          <https://github.com/engineervix/fedora-setup>
 # version:      1.0.0
-# license:      BSD-3-Clause
+# license:      MIT
 #
 # Usage: chmod +x setup.sh && ./setup.sh
 # =================================================================================================
