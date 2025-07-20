@@ -688,9 +688,18 @@ if ! command -v heroku &> /dev/null; then
     curl https://cli-assets.heroku.com/install.sh | sh
 fi
 
-# Create a basic .zshrc configuration
-log "Creating enhanced .zshrc configuration..."
-cat > "$HOME/.zshrc" << 'EOF'
+# zsh configuration
+log "Adding enhanced zsh configuration..."
+
+# Backup existing .zshrc if it has content (in case tools added stuff)
+if [[ -s "$HOME/.zshrc" ]]; then
+    cp -v "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d-%H%M%S)"
+    info "Backed up existing .zshrc (tools may have added configuration)"
+fi
+
+# IMPORTANT: Use >> to append, not > to overwrite
+cat >> "$HOME/.zshrc" << 'EOF'
+
 # =============== add custom scripts to PATH ===============
 export PATH="$PATH:$HOME/bin"
 export PATH="$PATH:$HOME/.local/bin"
@@ -857,6 +866,6 @@ info "2. Open a new terminal to start using zsh with starship"
 info "3. Configure your terminal to use JetBrains Mono Nerd Font or Fantasque Sans Mono Nerd Font"
 info "4. Customize your development environment further"
 echo
-warn "Note: You'll need to log out and back in for the zsh shell change to take effect"
+warn "Note: You'll need to log out and back in for the shell change to take full effect"
 echo
 info "Enjoy your new Fedora development environment! 🚀"
