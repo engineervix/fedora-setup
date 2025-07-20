@@ -2,7 +2,7 @@ name: ShellCheck
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - "**.sh"
       - ".github/workflows/main.yml"
