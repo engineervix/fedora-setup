@@ -48,13 +48,14 @@ setup_zsh() {
     sudo dnf install -y zsh
     
     # Change default shell immediately
-    chsh -s $(which zsh)
+    chsh -s "$(which zsh)"
     
     # Create initial .zshrc so tools can append to it
     touch "$HOME/.zshrc"
     
     # Set SHELL for current session so tools detect zsh
-    export SHELL=$(which zsh)
+    SHELL="$(which zsh)"
+    export SHELL
     
     log "zsh is now configured as the default shell"
     info "Development tools will now configure for zsh automatically"
@@ -67,14 +68,15 @@ setup_zsh
 profile_uuid=$(dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d "'")
 
 # Set the terminal emulator's opacity (change 0.85 to your desired value)
-dconf write /org/gnome/Ptyxis/Profiles/$profile_uuid/opacity 0.85
+dconf write "/org/gnome/Ptyxis/Profiles/$profile_uuid/opacity" 0.85
 log "Set opacity to 0.85 for profile: $profile_uuid"
 
 # Enable RPM Fusion repositories (you should already have enabled the NVIDIA & Steam one after install, on first boot)
 log "Enabling RPM Fusion repositories..."
+fedora_version="$(rpm -E %fedora)"
 sudo dnf install -y \
-    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$fedora_version.noarch.rpm" \
+    "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$fedora_version.noarch.rpm"
 
 # Some UX updates
 gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
@@ -183,7 +185,7 @@ sudo dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/do
 sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 sudo systemctl enable --now docker
 sudo groupadd docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker "$USER"
 newgrp docker
 
 # ctop
@@ -266,7 +268,7 @@ install_zoom() {
     # Create temporary directory for zoom installer
     local temp_dir="/tmp/zoom-installer"
     mkdir -p "$temp_dir"
-    cd "$temp_dir"
+    cd "$temp_dir" || exit
     
     info "Setting up temporary Node.js environment for Zoom download..."
     
@@ -356,7 +358,8 @@ EOF
     fi
     
     # Find the downloaded RPM file
-    local rpm_file=$(find . -name "zoom_*.rpm" | head -1)
+    local rpm_file
+    rpm_file=$(find . -name "zoom_*.rpm" | head -1)
     
     if [ -z "$rpm_file" ]; then
         error "Could not find downloaded Zoom RPM file"
@@ -644,10 +647,12 @@ pipx ensurepath
 pipx install poetry
 poetry completions bash >> ~/.bash_completion
 poetry completions zsh > ~/.zfunc/_poetry
-echo '' >> $HOME/.zshrc
-echo '# Poetry' >> $HOME/.zshrc
-echo 'fpath+=~/.zfunc' >> $HOME/.zshrc
-echo 'autoload -Uz compinit && compinit' >> $HOME/.zshrc
+{
+    echo ''
+    echo '# Poetry'
+    echo 'fpath+=~/.zfunc'
+    echo 'autoload -Uz compinit && compinit'
+} >> "$HOME/.zshrc"
 
 # Set up virtualenvwrapper
 log "Configuring virtualenvwrapper..."
@@ -657,14 +662,17 @@ mkdir -p "$HOME/.virtualenvs"
 log "Installing Go..."
 if ! command -v go &> /dev/null; then
     sudo dnf install golang -y
-    echo '' >> $HOME/.zshrc
-    echo '# Go' >> $HOME/.zshrc
-    echo 'export GOPATH=$HOME/go' >> $HOME/.zshrc
+    {
+        echo ''
+        echo '# Go'
+        echo "export GOPATH=\$HOME/go"
+    } >> "$HOME/.zshrc"
 fi
 
 log "Installing Go development tools..."
 go install golang.org/x/tools/gopls@latest
-GOPATH=$HOME/go curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin
+gopath_bin="$(go env GOPATH)/bin"
+GOPATH=$HOME/go curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b "$gopath_bin"
 golangci-lint --version
 
 # Rust
