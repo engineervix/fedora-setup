@@ -1,0 +1,5 @@
+# ShellCheck configuration file
+
+# Disable specific warnings globally
+disable=SC1091  # Not following sourced files (virtualenvwrapper, etc.)
+disable=SC2034  # Variable appears unused (some variables are used in sourced contexts)

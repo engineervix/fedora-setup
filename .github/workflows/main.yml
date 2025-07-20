@@ -6,11 +6,13 @@ on:
     paths:
       - "**.sh"
       - ".github/workflows/main.yml"
+      - ".shellcheckrc"
   pull_request:
     branches: [main]
     paths:
       - "**.sh"
       - ".github/workflows/main.yml"
+      - ".shellcheckrc"
   workflow_dispatch:
 
 jobs:
@@ -27,9 +29,6 @@ jobs:
         with:
           scandir: "."
           format: gcc
-          severity: warning
-        env:
-          SHELLCHECK_OPTS: -e SC1091 -e SC2034 -e SC2164
 
       - name: ShellCheck Results
         if: failure()
