@@ -1,0 +1,39 @@
+name: ShellCheck
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "**.sh"
+      - ".github/workflows/main.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "**.sh"
+      - ".github/workflows/main.yml"
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    name: ShellCheck Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: "."
+          format: gcc
+          severity: warning
+        env:
+          SHELLCHECK_OPTS: -e SC1091 -e SC2034 -e SC2164
+
+      - name: ShellCheck Results
+        if: failure()
+        run: |
+          echo "ShellCheck found issues in the shell scripts."
+          echo "Please review and fix the issues before merging."
+          exit 1
