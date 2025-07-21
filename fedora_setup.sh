@@ -474,28 +474,41 @@ sudo dnf install -y \
 # eza
 # Get the latest release tag
 LATEST_TAG=$(curl -s https://api.github.com/repos/eza-community/eza/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
-log  "Installing eza version: $LATEST_TAG"
+log "Installing eza version: $LATEST_TAG"
 
 # Download and install binary
 wget -O /tmp/eza.tar.gz \
   "https://github.com/eza-community/eza/releases/download/$LATEST_TAG/eza_x86_64-unknown-linux-gnu.tar.gz"
 tar -xzf /tmp/eza.tar.gz -C /tmp/
 sudo cp /tmp/eza /usr/local/bin/
-chmod +x /usr/local/bin/eza
+sudo chmod +x /usr/local/bin/eza
 
 # Download completions to a permanent location
 COMPLETIONS_DIR="$HOME/.local/share/eza-completions"
 mkdir -p "$COMPLETIONS_DIR"
 wget -O /tmp/completions.tar.gz \
   "https://github.com/eza-community/eza/releases/download/$LATEST_TAG/completions-${LATEST_TAG#v}.tar.gz"
-tar -xzf /tmp/completions.tar.gz -C /tmp/
-cp -r /tmp/completions/* "$COMPLETIONS_DIR/"
+
+# Extract completions to a temporary target directory
+mkdir -p /tmp/target
+tar -xzf /tmp/completions.tar.gz -C /tmp/target/
+
+# Find the actual completions directory (it includes the version number)
+COMPLETIONS_EXTRACTED_DIR=$(find /tmp/target -name "completions-*" -type d | head -1)
+
+if [ -n "$COMPLETIONS_EXTRACTED_DIR" ] && [ -d "$COMPLETIONS_EXTRACTED_DIR" ]; then
+    # Copy all completion files directly to the completions directory
+    cp "$COMPLETIONS_EXTRACTED_DIR"/* "$COMPLETIONS_DIR/"
+    log "Completions for eza installed successfully"
+else
+    warn "Could not find extracted completions directory, skipping completion setup"
+fi
 
 # Clean up
-rm -rfv /tmp/eza* /tmp/completions*
+rm -rf /tmp/eza* /tmp/completions* /tmp/target/
 
 log "eza $LATEST_TAG installed successfully!"
-log "Add 'alias ls=eza' to your shell config to use it as default ls."
+log "Completions installed to: $COMPLETIONS_DIR"
 
 # Vim
 log "Setting up Vim with development plugins..."
@@ -557,10 +570,16 @@ call plug#end()
 filetype plugin indent on
 syntax enable
 
-" Theme
-set background=dark
-colorscheme gruvbox
-let g:airline_theme='gruvbox'
+" Theme - with fallback if gruvbox isn't installed yet
+try
+    set background=dark
+    colorscheme gruvbox
+    let g:airline_theme='gruvbox'
+catch /^Vim\%((\a\+)\)\=:E185/
+    " Fallback to default if gruvbox not available
+    colorscheme default
+    let g:airline_theme='dark'
+endtry
 
 " General settings
 set number
@@ -610,8 +629,29 @@ autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 EOF
 
 # Install vim plugins
-log "Installing vim plugins..."
-vim +PlugInstall +qall
+log "Installing vim plugins (this may take a few minutes)..."
+info "Note: YouCompleteMe will compile in the background - this is normal and may take some time"
+
+# Install plugins in a more controlled way
+if vim --not-a-term -c 'PlugInstall --sync | qa!' > /tmp/vim-plug-install.log 2>&1; then
+    log "Vim plugins installed successfully"
+    
+    # Check if YouCompleteMe needs manual compilation (fallback)
+    if [ -d "$HOME/.vim/plugged/YouCompleteMe" ] && [ ! -f "$HOME/.vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so" ]; then
+        log "Compiling YouCompleteMe manually..."
+        cd "$HOME/.vim/plugged/YouCompleteMe"
+        if python3 install.py > /tmp/ycm-install.log 2>&1; then
+            log "YouCompleteMe compiled successfully"
+        else
+            warn "YouCompleteMe compilation had issues - check /tmp/ycm-install.log"
+            warn "You may need to install additional development packages"
+        fi
+        cd - > /dev/null
+    fi
+else
+    warn "Some vim plugins may not have installed correctly - check /tmp/vim-plug-install.log"
+    warn "You can manually run ':PlugInstall' in vim to retry"
+fi
 
 log "Vim setup completed! Use ':NERDTree' to open file explorer, ':Files' for fuzzy finding."
 
@@ -667,7 +707,7 @@ fc-cache -fv
 log "Font cache rebuilt successfully"
 
 # https://starship.rs
-sudo dnf copr enable atim/starship
+sudo dnf copr enable atim/starship -y
 sudo dnf install starship -y
 
 # Visual Studio Code (official Microsoft repository)
