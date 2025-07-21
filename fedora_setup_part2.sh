@@ -710,6 +710,7 @@ if ! command -v pyenv &> /dev/null; then
 fi
 
 log "Installing Poetry..."
+export PATH="$PATH:$HOME/.local/bin"
 pipx ensurepath
 pipx install poetry
 poetry completions bash >> ~/.bash_completion
