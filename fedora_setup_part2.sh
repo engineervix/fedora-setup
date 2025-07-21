@@ -666,6 +666,10 @@ log "Font cache rebuilt successfully"
 # https://starship.rs
 sudo dnf copr enable atim/starship -y
 sudo dnf install starship -y
+# Configure Starship with Catppuccin Powerline preset
+log "Configuring Starship with Catppuccin Powerline preset..."
+mkdir -p "$HOME/.config"
+starship preset catppuccin-powerline -o "$HOME/.config/starship.toml"
 
 # Visual Studio Code (official Microsoft repository)
 log "Installing Visual Studio Code..."
