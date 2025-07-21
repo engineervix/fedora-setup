@@ -38,13 +38,14 @@ info() {
 
 log "Starting Fedora 42 Developer Setup..."
 
-# Update system first
-log "Updating system packages..."
-sudo dnf update -y
-
 # Speed up dnf
+log "Optimizing DNF configuration for faster downloads..."
 echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf
 echo "max_parallel_downloads=6" | sudo tee -a /etc/dnf/dnf.conf
+
+# Update system
+log "Updating system packages..."
+sudo dnf update -y
 
 # Set hostname
 log "Let's set up a new hostname"
