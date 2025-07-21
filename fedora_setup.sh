@@ -47,7 +47,7 @@ echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf
 echo "max_parallel_downloads=6" | sudo tee -a /etc/dnf/dnf.conf
 
 # Set hostname
-log "Let's setup a new hostname"
+log "Let's set up a new hostname"
 read -rp 'hostname: ' myhostname 
 sudo hostnamectl set-hostname "$myhostname"
 
@@ -251,11 +251,13 @@ sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 sudo systemctl enable --now docker
 sudo groupadd docker
 sudo usermod -aG docker "$USER"
-newgrp docker
+# newgrp docker # may not work properly in a script context, so we skip it, after all, we'll log out and back in to apply group changes
 
 # ctop
 log "Installing ctop..."
-sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -O /usr/local/bin/ctop
+CTOP_LATEST_TAG=$(curl -s https://api.github.com/repos/bcicen/ctop/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+log "Installing ctop version: $CTOP_LATEST_TAG"
+sudo wget "https://github.com/bcicen/ctop/releases/download/$CTOP_LATEST_TAG/ctop-${CTOP_LATEST_TAG#v}-linux-amd64" -O /usr/local/bin/ctop
 sudo chmod +x /usr/local/bin/ctop
 
 # Node.js development tools with Volta
@@ -627,7 +629,6 @@ if [ ! -f "$HOME/.local/share/fonts/JetBrainsMonoNerdFont-Regular.ttf" ]; then
     wget -O /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip
     unzip /tmp/JetBrainsMono.zip -d /tmp/JetBrainsMono/
     cp /tmp/JetBrainsMono/*.ttf "$HOME/.local/share/fonts/"
-    fc-cache -fv
     rm -rf /tmp/JetBrainsMono*
 fi
 
@@ -637,7 +638,6 @@ if [ ! -f "$HOME/.local/share/fonts/FantasqueSansMono Nerd Font Regular.ttf" ]; 
     wget -O /tmp/FantasqueSansMono.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FantasqueSansMono.zip
     unzip /tmp/FantasqueSansMono.zip -d /tmp/FantasqueSansMono/
     cp /tmp/FantasqueSansMono/*.ttf "$HOME/.local/share/fonts/"
-    fc-cache -fv
     rm -rf /tmp/FantasqueSansMono*
     log "Fantasque Sans Mono Nerd Font installed successfully"
 else
@@ -654,12 +654,16 @@ if [ ! -f "$HOME/.local/share/fonts/CascadiaCode-Regular.ttf" ]; then
     cp /tmp/CascadiaCode/ttf/*.ttf "$HOME/.local/share/fonts/"
     cp /tmp/CascadiaCode/ttf/static/*.ttf "$HOME/.local/share/fonts/"
     
-    fc-cache -fv
     rm -rf /tmp/CascadiaCode*
     log "Cascadia Code font family installed successfully (includes Nerd Font and Powerline variants)"
 else
     info "Cascadia Code font already installed, skipping..."
 fi
+
+# Rebuild font cache after all font installations
+log "Rebuilding font cache..."
+fc-cache -fv
+log "Font cache rebuilt successfully"
 
 # https://starship.rs
 sudo dnf copr enable atim/starship
