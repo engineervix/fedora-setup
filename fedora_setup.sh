@@ -42,6 +42,15 @@ log "Starting Fedora 42 Developer Setup..."
 log "Updating system packages..."
 sudo dnf update -y
 
+# Speed up dnf
+echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf
+echo "max_parallel_downloads=6" | sudo tee -a /etc/dnf/dnf.conf
+
+# Set hostname
+log "Let's setup a new hostname"
+read -rp 'hostname: ' myhostname 
+sudo hostnamectl set-hostname "$myhostname"
+
 # zsh 
 setup_zsh() {
     log "Installing zsh and setting it as default shell..."
@@ -80,14 +89,21 @@ sudo dnf install -y \
 
 # Some UX updates
 gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
+gsettings set org.gnome.desktop.interface show-battery-percentage true
 
 # Enable Flathub (even though I prefer avoiding flatpaks, some apps might need it)
 log "Enabling Flathub repository..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# Install development tools and essential packages
+# Install development and multimedia tools
 log "Installing development tools and essential packages..."
-sudo dnf group install -y c-development development-tools vlc
+sudo dnf group install -y c-development development-tools multimedia vlc -y
+sudo dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing -y
+sudo dnf upgrade @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin -y
+sudo dnf group install -y sound-and-video
+sudo dnf install ffmpeg-libs libva libva-utils -y
+sudo dnf swap libva-intel-media-driver intel-media-driver --allowerasing -y
+sudo dnf install libva-intel-driver -y
 
 # Core development packages
 log "Installing core development packages..."
@@ -128,9 +144,28 @@ sudo dnf remove -y \
 # Various tools
 log "Installing some essential utilities, tools & applications ..."
 sudo dnf install -y \
+    audacity \
+    gnome-tweaks \
+    gnome-extensions-app \
+    gnome-shell-extension-openweather \
+    gnome-shell-extension-pop-shell \
+    intel-media-driver \
+    libgtop2-devel \
+    lm_sensors \
+    gscan2pdf \
     htop \
     btop \
     just \
+    meld \
+    stacer \
+    xiphos \
+    ShellCheck \
+    aspell \
+    screenkey \
+    ocrmypdf \
+    yt-dlp \
+    Thunar \
+    transmission \
     nautilus-python \
 	libXScrnSaver \
 	libappindicator-gtk3 \
@@ -164,6 +199,12 @@ sudo dnf install -y \
     git-delta \
     tokei \
     procs
+# Run dconf to update the system dconf databases, making the newly installed system-wide extensions available to all users.
+sudo dconf update
+
+# OpenH264 is used for H.264/MPEG-4 media playback. Adding this can enhance your web browsing experience
+sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
+
 sudo dnf copr enable atim/lazygit -y
 sudo dnf install lazygit -y
 sudo dnf copr enable atim/bandwhich -y
@@ -209,7 +250,7 @@ fi
 
 log "Installing Node.js development tools..."
 # Use volta run to ensure we're using the right node version
-volta run npm install -g prettier svgo doctoc mdpdf
+volta run npm install -g prettier svgo doctoc mdpdf serve
 
 # Browsers
 log "Installing Chromium & Google Chrome..."
@@ -877,3 +918,14 @@ echo
 warn "Note: You'll need to log out and back in for the shell change to take full effect"
 echo
 info "Enjoy your new Fedora development environment! 🚀"
+
+# Enable Firefox Hardware Acceleration & WebRender:
+# In Firefox, go to about:config and set:
+# layers.acceleration.force-enabled → true
+# gfx.webrender.all → true
+
+# open Firefox and go to about:addons and select Plugins. 
+# Enable the OpenH264 plugin. 
+# [Verify](https://mozilla.github.io/webrtc-landing/pc_test.html) the plugin is working correctly.
+
+# Install https://extensions.gnome.org/extension/1460/vitals/ in Firefox
