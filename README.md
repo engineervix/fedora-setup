@@ -198,8 +198,9 @@ After running the script:
 1. **Reboot your system** for all changes to take effect
 2. **Open a new terminal** to start using zsh
 3. **Configure your terminal font** to use one of the installed Nerd Fonts
-4. **Set up Git, SSH, GnuGPG, AWS-CLI, Heroku CLI**, and other things that need auth 
-5. **Follow the Firefox Configuration Steps:**
+4. **Complete Spotify installation** by running `lpf update`
+5. **Set up Git, SSH, GnuGPG, AWS-CLI, Heroku CLI**, and other things that need auth 
+6. **Follow the Firefox Configuration Steps:**
    - **Enable Hardware Acceleration & WebRender:**
      - Go to `about:config` in Firefox
      - Set `layers.acceleration.force-enabled` → `true`
@@ -211,7 +212,7 @@ After running the script:
    - **Install GNOME Vitals extension:**
      - Visit: https://extensions.gnome.org/extension/1460/vitals/
      - Install the extension in Firefox
-6. **Customize further** based on your specific needs
+7. **Customize further** based on your specific needs
 
 ## References
 

@@ -1059,7 +1059,6 @@ EOF
 
 # Spotify
 sudo dnf install lpf-spotify-client -y
-lpf update
 
 # Clean up
 log "Cleaning up..."
@@ -1072,7 +1071,8 @@ info "Recommended next steps:"
 info "1. Reboot your system to ensure all changes take effect"
 info "2. Open a new terminal to start using zsh with starship"
 info "3. Configure your terminal to use JetBrains Mono Nerd Font or Fantasque Sans Mono Nerd Font"
-info "4. Customize your development environment further"
+info "4. Run 'lpf update' to complete Spotify installation"
+info "5. Customize your development environment further"
 echo
 warn "Note: You'll need to log out and back in for the shell change to take full effect"
 echo
