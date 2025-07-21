@@ -114,14 +114,14 @@ sudo dnf install -y \
     sqlite-devel \
     tk-devel \
     xz-devel \
-    zlib-devel 
+    zlib-devel
 
 # Remove stuff we don't need
 log "Removing some things we don't need..."
 sudo dnf remove -y \
 	totem \
 	rhythmbox
-    
+
 # Various tools
 log "Installing some essential utilities, tools & applications ..."
 sudo dnf install -y \
@@ -223,7 +223,7 @@ if ! command -v volta &> /dev/null; then
     # Add volta to PATH for current session
     export VOLTA_HOME="$HOME/.volta"
     export PATH="$VOLTA_HOME/bin:$PATH"
-    
+
     # Install latest Node.js and npm with Volta
     log "Installing Node.js and npm via Volta..."
     volta install node@lts
@@ -249,27 +249,27 @@ log "Installing communication tools..."
 # Slack (using the official RPM)
 install_slack() {
     log "Starting Slack installation..."
-    
+
     info "Fetching Slack download URL..."
     local download_url
     download_url=$(curl -sL "https://slack.com/downloads/instructions/linux?ddl=1&build=rpm" | \
         grep -o 'https://downloads.slack-edge.com[^"]*\.rpm' | head -1)
-    
+
     if [ -z "$download_url" ]; then
         error "Could not find Slack download URL"
         return 1
     fi
-    
+
     info "Found download URL: $download_url"
     info "Downloading Slack RPM package..."
-    
+
     if curl -L -o "/tmp/slack.rpm" "$download_url"; then
         log "Slack downloaded successfully"
     else
         error "Failed to download Slack"
         return 1
     fi
-    
+
     info "Installing Slack..."
     if sudo dnf install -y /tmp/slack.rpm; then
         log "Slack installed successfully"
@@ -287,14 +287,14 @@ install_slack
 # Zoom (using official RPM)
 install_zoom() {
     log "Installing Zoom via automated download..."
-    
+
     # Create temporary directory for zoom installer
     local temp_dir="/tmp/zoom-installer"
     mkdir -p "$temp_dir"
     cd "$temp_dir" || exit
-    
+
     info "Setting up temporary Node.js environment for Zoom download..."
-    
+
     # Create a minimal package.json
     cat > package.json << 'EOF'
 {
@@ -320,27 +320,27 @@ async function downloadZoomForFedora() {
   try {
     // Navigate to Zoom download page
     await page.goto('https://zoom.us/download?os=linux');
-    
+
     // Handle cookie banner
     await page.getByRole('button', { name: 'Decline Cookies' }).click();
-    
+
     // Click to open the Linux distribution dropdown
     await page.getByLabel('Show options').click();
-    
+
     // Select Fedora
     await page.getByText('Fedora').click();
-    
+
     // Start download
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('link', { name: 'Download Zoom Workplace' }).click();
-    
+
     // Wait for download to start and save with original filename
     const download = await downloadPromise;
     const fileName = download.suggestedFilename();
     await download.saveAs(`./${fileName}`);
-    
+
     console.log(`Download completed: ${fileName}`);
-    
+
   } catch (error) {
     console.error('Download failed:', error);
     process.exit(1);
@@ -361,7 +361,7 @@ EOF
         cd - && rm -rf "$temp_dir"
         return 1
     fi
-    
+
     info "Installing Chromium browser..."
     if volta run npx playwright install chromium; then
         log "Chromium installed successfully"
@@ -370,7 +370,7 @@ EOF
         cd - && rm -rf "$temp_dir"
         return 1
     fi
-    
+
     info "Downloading Zoom RPM package..."
     if volta run node zoom-download.js; then
         log "Zoom download completed"
@@ -379,17 +379,17 @@ EOF
         cd - && rm -rf "$temp_dir"
         return 1
     fi
-    
+
     # Find the downloaded RPM file
     local rpm_file
     rpm_file=$(find . -name "zoom_*.rpm" | head -1)
-    
+
     if [ -z "$rpm_file" ]; then
         error "Could not find downloaded Zoom RPM file"
         cd - && rm -rf "$temp_dir"
         return 1
     fi
-    
+
     info "Installing Zoom RPM package: $rpm_file"
     if sudo dnf install -y "$rpm_file"; then
         log "Zoom installed successfully"
@@ -398,19 +398,19 @@ EOF
         cd - && rm -rf "$temp_dir"
         return 1
     fi
-    
+
     # Return to original directory and cleanup
     cd -
-    
+
     info "Cleaning up temporary files and Playwright cache..."
     rm -rf "$temp_dir"
-    
+
     # Clean up Playwright cache (located in ~/.cache/ms-playwright)
     if [ -d "$HOME/.cache/ms-playwright" ]; then
         rm -rf "$HOME/.cache/ms-playwright"
         log "Playwright browser cache cleaned up"
     fi
-    
+
     log "Zoom installation completed successfully"
 }
 
@@ -592,7 +592,7 @@ info "Note: YouCompleteMe will compile in the background - this is normal and ma
 # Install plugins in a more controlled way
 if vim --not-a-term -c 'PlugInstall --sync | qa!' > /tmp/vim-plug-install.log 2>&1; then
     log "Vim plugins installed successfully"
-    
+
     # Check if YouCompleteMe needs manual compilation (fallback)
     if [ -d "$HOME/.vim/plugged/YouCompleteMe" ] && [ ! -f "$HOME/.vim/plugged/YouCompleteMe/third_party/ycmd/ycm_core.so" ]; then
         log "Compiling YouCompleteMe manually..."
@@ -647,11 +647,11 @@ if [ ! -f "$HOME/.local/share/fonts/CascadiaCode-Regular.ttf" ]; then
     log "Installing Cascadia Code font family..."
     wget -O /tmp/CascadiaCode.zip https://github.com/microsoft/cascadia-code/releases/download/v2407.24/CascadiaCode-2407.24.zip
     unzip /tmp/CascadiaCode.zip -d /tmp/CascadiaCode/
-    
+
     # Install both variable fonts (from ttf/) and static fonts (from ttf/static/)
     cp /tmp/CascadiaCode/ttf/*.ttf "$HOME/.local/share/fonts/"
     cp /tmp/CascadiaCode/ttf/static/*.ttf "$HOME/.local/share/fonts/"
-    
+
     rm -rf /tmp/CascadiaCode*
     log "Cascadia Code font family installed successfully (includes Nerd Font and Powerline variants)"
 else
@@ -695,7 +695,7 @@ read -r install_cursor
 if [[ "$install_cursor" =~ ^[Yy]$ ]]; then
     log "Installing Cursor editor..."
     CURSOR_INSTALL_URL="https://raw.githubusercontent.com/engineervix/fedora-setup/main/install_cursor.sh"
-    
+
     if curl -fsSL "$CURSOR_INSTALL_URL" | bash; then
         log "Cursor installed successfully"
     else
@@ -1044,11 +1044,11 @@ sudo dnf install lpf-spotify-client -y
 # Add option to "Open in console tab" -- https://blog.victor.co.zm/custom-nautilus-context-menu-python-extension
 setup_nautilus_ptyxis_extension() {
     log "Setting up Nautilus Ptyxis tab extension..."
-    
+
     # Create the nautilus-python extensions directory
     local extensions_dir="$HOME/.local/share/nautilus-python/extensions"
     mkdir -p "$extensions_dir"
-    
+
     # Create the extension file
     cat > "$extensions_dir/ptyxis_tab_extension.py" << 'EOF'
 #!/usr/bin/env python3
@@ -1097,13 +1097,21 @@ EOF
 
     # Make the extension executable
     chmod +x "$extensions_dir/ptyxis_tab_extension.py"
-    
+
     log "Nautilus Ptyxis tab extension installed successfully"
     info "You may need to restart Nautilus for the extension to take effect"
     info "You can restart Nautilus by running: nautilus -q"
 }
 
 setup_nautilus_ptyxis_extension
+
+# ZSH niceties
+sudo dnf install -y zsh-syntax-highlighting zsh-autosuggestions
+echo ''
+echo '# ============ fish-like syntax highlighting & autosuggestions =============='
+echo "source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> "${ZDOTDIR:-$HOME}"/.zshrc
+echo "source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh" >> "${ZDOTDIR:-$HOME}"/.zshrc
+echo "# ==========================================================================="
 
 # Clean up
 log "Cleaning up..."
