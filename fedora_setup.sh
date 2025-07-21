@@ -146,6 +146,7 @@ sudo dnf install -y \
     libyaml-devel \
     ncurses-devel \
     openssl-devel \
+    mkcert \
     pipx \
     python3-devel \
     python3-pip \
@@ -800,6 +801,7 @@ cursor() {
 export FPATH="$HOME/.local/share/eza-completions/zsh:$FPATH"
 
 # =============== Aliases ===============
+# General
 alias open="xdg-open"
 alias ll='eza -la --icons'
 alias ls='eza --icons'
@@ -810,6 +812,95 @@ alias du='duf'
 alias top='btop'
 alias ps='procs'
 alias cd='z'
+
+# Git (credits: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh)
+alias ggpur='ggu'
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gapa='git add --patch'
+alias gau='git add --update'
+alias gav='git add --verbose'
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
+alias gam='git am'
+alias gama='git am --abort'
+alias gamc='git am --continue'
+alias gamscp='git am --show-current-patch'
+alias gams='git am --skip'
+alias gap='git apply'
+alias gapt='git apply --3way'
+alias gbs='git bisect'
+alias gbsb='git bisect bad'
+alias gbsg='git bisect good'
+alias gbsn='git bisect new'
+alias gbso='git bisect old'
+alias gbsr='git bisect reset'
+alias gbss='git bisect start'
+alias gbl='git blame -w'
+alias gb='git branch'
+alias gba='git branch --all'
+alias gbd='git branch --delete'
+alias gbD='git branch --delete --force'
+
+# Docker (Credits: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/docker/docker.plugin.zsh)
+alias dbl='docker build'
+alias dcin='docker container inspect'
+alias dcls='docker container ls'
+alias dclsa='docker container ls -a'
+alias dib='docker image build'
+alias dii='docker image inspect'
+alias dils='docker image ls'
+alias dipu='docker image push'
+alias dipru='docker image prune -a'
+alias dirm='docker image rm'
+alias dit='docker image tag'
+alias dlo='docker container logs'
+alias dnc='docker network create'
+alias dncn='docker network connect'
+alias dndcn='docker network disconnect'
+alias dni='docker network inspect'
+alias dnls='docker network ls'
+alias dnrm='docker network rm'
+alias dpo='docker container port'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias dpu='docker pull'
+alias dr='docker container run'
+alias drit='docker container run -it'
+alias drm='docker container rm'
+alias 'drm!'='docker container rm -f'
+alias dst='docker container start'
+alias drs='docker container restart'
+alias dsta='docker stop $(docker ps -q)'
+alias dstp='docker container stop'
+alias dsts='docker stats'
+alias dtop='docker top'
+alias dvi='docker volume inspect'
+alias dvls='docker volume ls'
+alias dvprune='docker volume prune'
+alias dxc='docker container exec'
+alias dxcit='docker container exec -it'
+
+# Docker Compose (Credits: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/docker-compose/docker-compose.plugin.zsh)
+alias dco="docker compose"
+alias dcb="docker compose build"
+alias dce="docker compose exec"
+alias dcps="docker compose ps"
+alias dcrestart="docker compose restart"
+alias dcrm="docker compose rm"
+alias dcr="docker compose run"
+alias dcstop="docker compose stop"
+alias dcup="docker compose up"
+alias dcupb="docker compose up --build"
+alias dcupd="docker compose up -d"
+alias dcupdb="docker compose up -d --build"
+alias dcdn="docker compose down"
+alias dcl="docker compose logs"
+alias dclf="docker compose logs -f"
+alias dclF="docker compose logs -f --tail 0"
+alias dcpull="docker compose pull"
+alias dcstart="docker compose start"
+alias dck="docker compose kill"
 
 # =============== FZF configuration ===============
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
