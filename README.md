@@ -24,6 +24,7 @@ An automated setup script for Fedora 42 that configures a complete development e
   - [Modern CLI Tools](#modern-cli-tools)
   - [Shell Configuration](#shell-configuration)
 - [Post-Installation](#post-installation)
+- [References](#references)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -144,3 +145,11 @@ After running the script:
 2. **Open a new terminal** to start using zsh
 3. **Configure your terminal font** to use one of the installed Nerd Fonts
 4. **Customize further** based on your specific needs
+
+## References
+
+- <https://github.com/devangshekhawat/Fedora-42-Post-Install-Guide>
+- <https://www.youtube.com/watch?v=ixa3ezZ9XNY>
+- <https://www.hackingthehike.com/fedora42-guide/>
+- <https://techstay.tech/posts/things-to-do-after-installing-fedora-42.html>
+- <https://gist.github.com/engineervix/ed53aa410a22620013e04baca437abb3>
