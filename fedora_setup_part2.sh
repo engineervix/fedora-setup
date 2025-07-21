@@ -784,13 +784,20 @@ cat >> "$HOME/.zshrc" << 'EOF'
 # =============== Keybindings ===============
 bindkey -e  # Use emacs key bindings
 
-# Fix Ctrl+Arrow word navigation
+# Ctrl+Arrow word navigation
 bindkey '^[[1;5C' forward-word      # Ctrl+Right
 bindkey '^[[1;5D' backward-word     # Ctrl+Left
 
 # Other useful keybindings
 bindkey '^[[H' beginning-of-line    # Home
 bindkey '^[[F' end-of-line          # End
+
+# =============== History ===============
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+
+setopt inc_append_history
 
 # =============== add custom scripts to PATH ===============
 export PATH="$PATH:$HOME/bin"
@@ -835,33 +842,7 @@ alias ps='procs'
 alias cd='z'
 
 # Git (credits: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh)
-alias ggpur='ggu'
-alias g='git'
-alias ga='git add'
-alias gaa='git add --all'
-alias gapa='git add --patch'
-alias gau='git add --update'
-alias gav='git add --verbose'
-alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
-alias gam='git am'
-alias gama='git am --abort'
-alias gamc='git am --continue'
-alias gamscp='git am --show-current-patch'
-alias gams='git am --skip'
-alias gap='git apply'
-alias gapt='git apply --3way'
-alias gbs='git bisect'
-alias gbsb='git bisect bad'
-alias gbsg='git bisect good'
-alias gbsn='git bisect new'
-alias gbso='git bisect old'
-alias gbsr='git bisect reset'
-alias gbss='git bisect start'
-alias gbl='git blame -w'
-alias gb='git branch'
-alias gba='git branch --all'
-alias gbd='git branch --delete'
-alias gbD='git branch --delete --force'
+
 
 # Docker (Credits: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/docker/docker.plugin.zsh)
 alias dbl='docker build'
