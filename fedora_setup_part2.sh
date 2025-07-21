@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 # =================================================================================================
-# description:  Fedora 42 setup script
+# description:  Fedora 42 setup script - Part 2: Main setup after reboot
 # author:       Victor Miti <https://github.com/engineervix>
 # url:          <https://github.com/engineervix/fedora-setup>
 # version:      1.0.0
 # license:      MIT
 #
-# Usage: chmod +x setup.sh && ./setup.sh
+# Usage: chmod +x fedora_setup_part2.sh && ./fedora_setup_part2.sh
 # =================================================================================================
 
 set -e  # Exit immediately if any command fails
@@ -36,67 +36,22 @@ info() {
     echo -e "${BLUE}[INFO] $1${NC}"
 }
 
-log "Starting Fedora 42 Developer Setup..."
+# Check if part 1 was completed
+if [ ! -f "$HOME/.fedora_setup_part1_complete" ]; then
+    error "Part 1 of the setup was not completed!"
+    error "Please run ./fedora_setup_part1.sh first, then reboot."
+    exit 1
+fi
 
-# Speed up dnf
-log "Optimizing DNF configuration for faster downloads..."
-echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf
-echo "max_parallel_downloads=6" | sudo tee -a /etc/dnf/dnf.conf
+# Check if we're running in zsh
+if [ "$SHELL" != "$(which zsh)" ]; then
+    warn "You're not running zsh as your default shell yet."
+    warn "The shell change may not have taken full effect."
+    info "Current shell: $SHELL"
+    info "Expected shell: $(which zsh)"
+fi
 
-# Update system
-log "Updating system packages..."
-sudo dnf update -y
-
-# Set hostname
-log "Let's set up a new hostname"
-read -rp 'hostname: ' myhostname 
-sudo hostnamectl set-hostname "$myhostname"
-
-# Configure DNS over TLS for better privacy
-setup_dns() {
-    log "Setting up secure DNS with Cloudflare DNS over TLS..."
-    
-    # Create systemd-resolved configuration directory if it doesn't exist
-    sudo mkdir -p '/etc/systemd/resolved.conf.d'
-    
-    # Create DNS over TLS configuration
-    sudo tee '/etc/systemd/resolved.conf.d/99-dns-over-tls.conf' > /dev/null << 'EOF'
-[Resolve]
-DNS=1.1.1.2#security.cloudflare-dns.com 1.0.0.2#security.cloudflare-dns.com 2606:4700:4700::1112#security.cloudflare-dns.com 2606:4700:4700::1002#security.cloudflare-dns.com
-DNSOverTLS=yes
-EOF
-    
-    # Restart systemd-resolved to apply changes
-    sudo systemctl restart systemd-resolved
-    
-    log "DNS over TLS configured with Cloudflare's security-focused DNS servers"
-    info "DNS queries will now be encrypted and use malware/phishing protection"
-}
-
-# Set up secure DNS
-setup_dns
-
-# zsh 
-setup_zsh() {
-    log "Installing zsh and setting it as default shell..."
-    sudo dnf install -y zsh
-    
-    # Change default shell immediately
-    chsh -s "$(which zsh)"
-    
-    # Create initial .zshrc so tools can append to it
-    touch "$HOME/.zshrc"
-    
-    # Set SHELL for current session so tools detect zsh
-    SHELL="$(which zsh)"
-    export SHELL
-    
-    log "zsh is now configured as the default shell"
-    info "Development tools will now configure for zsh automatically"
-}
-
-# Set up zsh early so other tools can configure for it
-setup_zsh
+log "Starting Fedora 42 Developer Setup - Part 2..."
 
 # Get the default profile UUID
 profile_uuid=$(dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d "'")
@@ -1065,16 +1020,16 @@ log "Cleaning up..."
 sudo dnf autoremove -y
 sudo dnf clean all
 
+# Remove the setup marker file
+rm -f "$HOME/.fedora_setup_part1_complete"
+
 log "Setup complete! 🎉"
 echo
 info "Recommended next steps:"
-info "1. Reboot your system to ensure all changes take effect"
-info "2. Open a new terminal to start using zsh with starship"
-info "3. Configure your terminal to use JetBrains Mono Nerd Font or Fantasque Sans Mono Nerd Font"
-info "4. Run 'lpf update' to complete Spotify installation"
-info "5. Customize your development environment further"
-echo
-warn "Note: You'll need to log out and back in for the shell change to take full effect"
+info "1. Open a new terminal to start using zsh with starship"
+info "2. Configure your terminal to use JetBrains Mono Nerd Font or Fantasque Sans Mono Nerd Font"
+info "3. Run 'lpf update' to complete Spotify installation"
+info "4. Customize your development environment further"
 echo
 info "Enjoy your new Fedora development environment! 🚀"
 echo
