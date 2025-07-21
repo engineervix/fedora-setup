@@ -742,7 +742,6 @@ log "Installing Go development tools..."
 go install golang.org/x/tools/gopls@latest
 gopath_bin="$(go env GOPATH)/bin"
 GOPATH=$HOME/go curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b "$gopath_bin"
-golangci-lint --version
 
 # Rust
 log "Installing Rust..."
