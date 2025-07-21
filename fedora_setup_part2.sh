@@ -777,6 +777,17 @@ fi
 # IMPORTANT: Use >> to append, not > to overwrite
 cat >> "$HOME/.zshrc" << 'EOF'
 
+# =============== Keybindings ===============
+bindkey -e  # Use emacs key bindings
+
+# Fix Ctrl+Arrow word navigation
+bindkey '^[[1;5C' forward-word      # Ctrl+Right
+bindkey '^[[1;5D' backward-word     # Ctrl+Left
+
+# Other useful keybindings
+bindkey '^[[H' beginning-of-line    # Home
+bindkey '^[[F' end-of-line          # End
+
 # =============== add custom scripts to PATH ===============
 export PATH="$PATH:$HOME/bin"
 export PATH="$PATH:$HOME/.local/bin"
