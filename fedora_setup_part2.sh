@@ -808,8 +808,9 @@ export FPATH="$HOME/.local/share/eza-completions/zsh:$FPATH"
 # =============== Aliases ===============
 # General
 alias open="xdg-open"
-alias ll='eza -la --icons'
 alias ls='eza --icons'
+alias ll='eza -la --icons'
+alias la='eza -lah --icons'
 alias cat='bat'
 alias find='fd'
 alias grep='rg'
