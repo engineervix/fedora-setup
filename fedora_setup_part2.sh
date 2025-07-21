@@ -713,6 +713,7 @@ log "Installing Poetry..."
 export PATH="$PATH:$HOME/.local/bin"
 pipx ensurepath
 pipx install poetry
+mkdir -p "$HOME/.zfunc/"
 poetry completions bash >> ~/.bash_completion
 poetry completions zsh > ~/.zfunc/_poetry
 {
