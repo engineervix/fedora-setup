@@ -108,31 +108,31 @@ sudo dnf install libva-intel-driver -y
 # Core development packages
 log "Installing core development packages..."
 sudo dnf install -y \
-    cmake \
-    python3-pip \
-    python3-wheel \
-    python3-devel \
-    python3-virtualenvwrapper \
-    pipx \
-    ruby-devel \
-    tk-devel \
-    readline-devel \
-    openssl-devel \
-    libffi-devel \
     bzip2-devel \
-    libyaml-devel \
-    libpq-devel \
-    ncurses-devel \
-    readline-devel \
-    sqlite-devel \
+    cmake \
+    expat-devel \
+    gdbm-devel \
+    gstreamer1-devel \
+    gstreamer1-plugins-base-devel \
     gtk4-devel \
     libadwaita-devel \
-    gstreamer1-plugins-base-devel \
-    gstreamer1-devel \
-    xz-devel \
-    gdbm-devel \
+    libffi-devel \
     libpcap-devel \
-    expat-devel \
+    libpq-devel \
+    libyaml-devel \
+    ncurses-devel \
+    openssl-devel \
+    pipx \
+    python3-devel \
+    python3-pip \
+    python3-virtualenvwrapper \
+    python3-wheel \
+    readline-devel \
+    readline-devel \
+    ruby-devel \
+    sqlite-devel \
+    tk-devel \
+    xz-devel \
     zlib-devel 
 
 # Remove stuff we don't need
@@ -144,61 +144,61 @@ sudo dnf remove -y \
 # Various tools
 log "Installing some essential utilities, tools & applications ..."
 sudo dnf install -y \
+    aspell \
     audacity \
-    gnome-tweaks \
+    btop \
+    cifs-utils \
+    dconf-editor \
+    duf \
+    easyeffects \
+    gh \
+    gimp \
+    git-delta \
+    glab \
     gnome-extensions-app \
     gnome-shell-extension-openweather \
     gnome-shell-extension-pop-shell \
-    intel-media-driver \
-    libgtop2-devel \
-    lm_sensors \
+    gnome-tweaks \
     gscan2pdf \
     htop \
-    btop \
-    just \
-    meld \
-    stacer \
-    xiphos \
-    ShellCheck \
-    aspell \
-    screenkey \
-    ocrmypdf \
-    yt-dlp \
-    Thunar \
-    transmission \
-    nautilus-python \
-	libXScrnSaver \
-	libappindicator-gtk3 \
-    xdg-desktop-portal-gnome \
-    xdg-desktop-portal \
-	dconf-editor \
-    inkscape \
-    gimp \
-    easyeffects \
-    wireplumber \
-    pdftk-java \
-    pngquant \
-    okular \
-    xournalpp \
-    openssh-askpass \
-    ksshaskpass \
-    perl-Image-ExifTool \
-    pandoc \
-    samba-client \
-    cifs-utils \
-    sqlitebrowser \
-    yum-utils \
-    nss-tools \
-	rclone \
-    yq \
     httpie \
+    inkscape \
+    intel-media-driver \
+    just \
+    ksshaskpass \
+    libappindicator-gtk3 \
+    libgtop2-devel \
+    libXScrnSaver \
+    lm_sensors \
+    meld \
+    nautilus-python \
     ncdu \
-    duf \
-    gh \
-    glab \
-    git-delta \
+    nss-tools \
+    ocrmypdf \
+    okular \
+    openssh-askpass \
+    pandoc \
+    pdftk-java \
+    perl-Image-ExifTool \
+    pngquant \
+    procs \
+    rclone \
+    samba-client \
+    screenkey \
+    ShellCheck \
+    sqlitebrowser \
+    stacer \
+    Thunar \
     tokei \
-    procs
+    transmission \
+    wireplumber \
+    xdg-desktop-portal \
+    xdg-desktop-portal-gnome \
+    xiphos \
+    xournalpp \
+    yq \
+    yt-dlp \
+    yum-utils
 # Run dconf to update the system dconf databases, making the newly installed system-wide extensions available to all users.
 sudo dconf update
 
@@ -437,11 +437,11 @@ install_zoom
 # Terminal and shell improvements
 log "Installing terminal and shell improvements..."
 sudo dnf install -y \
-    tmux \
+    bat \
+    fd-find \
     fzf \
     ripgrep \
-    fd-find \
-    bat \
+    tmux \
     zoxide
 
 # eza
