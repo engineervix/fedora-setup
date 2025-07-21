@@ -733,8 +733,9 @@ if ! command -v go &> /dev/null; then
     sudo dnf install golang -y
     {
         echo ''
-        echo '# Go'
+        echo '=============== Go ==============='
         echo "export GOPATH=\$HOME/go"
+        echo "export PATH=\$PATH:\$GOPATH/bin"
     } >> "$HOME/.zshrc"
 fi
 
