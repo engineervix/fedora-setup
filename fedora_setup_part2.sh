@@ -1037,6 +1037,70 @@ EOF
 # Spotify
 sudo dnf install lpf-spotify-client -y
 
+# Add option to "Open in console tab" -- https://blog.victor.co.zm/custom-nautilus-context-menu-python-extension
+setup_nautilus_ptyxis_extension() {
+    log "Setting up Nautilus Ptyxis tab extension..."
+    
+    # Create the nautilus-python extensions directory
+    local extensions_dir="$HOME/.local/share/nautilus-python/extensions"
+    mkdir -p "$extensions_dir"
+    
+    # Create the extension file
+    cat > "$extensions_dir/ptyxis_tab_extension.py" << 'EOF'
+#!/usr/bin/env python3
+
+import subprocess
+from gi.repository import Nautilus, GObject
+
+
+class PtyxisTabMenuProvider(GObject.GObject, Nautilus.MenuProvider):
+    def __init__(self):
+        pass
+
+    def get_file_items(self, files):
+        # Only show for folders
+        if len(files) != 1 or not files[0].is_directory():
+            return []
+
+        item = Nautilus.MenuItem(
+            name="PtyxisTabExtension::open_in_tab",
+            label="Open in Console Tab",
+            tip="Open the folder in a Ptyxis console tab",
+        )
+
+        item.connect("activate", self.open_in_ptyxis_tab, files[0])
+        return [item]
+
+    # Handle right-click on background (empty space)
+    def get_background_items(self, current_folder):
+        item = Nautilus.MenuItem(
+            name="PtyxisTabExtension::open_current_in_tab",
+            label="Open in Console Tab",
+            tip="Open this folder in a Ptyxis console tab",
+        )
+
+        item.connect("activate", self.open_current_in_ptyxis_tab, current_folder)
+        return [item]
+
+    def open_in_ptyxis_tab(self, menu, file):
+        filepath = file.get_location().get_path()
+        subprocess.Popen(["ptyxis", "--tab", "-d", filepath])
+
+    def open_current_in_ptyxis_tab(self, menu, folder):
+        filepath = folder.get_location().get_path()
+        subprocess.Popen(["ptyxis", "--tab", "-d", filepath])
+EOF
+
+    # Make the extension executable
+    chmod +x "$extensions_dir/ptyxis_tab_extension.py"
+    
+    log "Nautilus Ptyxis tab extension installed successfully"
+    info "You may need to restart Nautilus for the extension to take effect"
+    info "You can restart Nautilus by running: nautilus -q"
+}
+
+setup_nautilus_ptyxis_extension
+
 # Clean up
 log "Cleaning up..."
 sudo dnf autoremove -y
