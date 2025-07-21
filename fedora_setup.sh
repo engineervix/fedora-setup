@@ -51,6 +51,30 @@ log "Let's setup a new hostname"
 read -rp 'hostname: ' myhostname 
 sudo hostnamectl set-hostname "$myhostname"
 
+# Configure DNS over TLS for better privacy
+setup_dns() {
+    log "Setting up secure DNS with Cloudflare DNS over TLS..."
+    
+    # Create systemd-resolved configuration directory if it doesn't exist
+    sudo mkdir -p '/etc/systemd/resolved.conf.d'
+    
+    # Create DNS over TLS configuration
+    sudo tee '/etc/systemd/resolved.conf.d/99-dns-over-tls.conf' > /dev/null << 'EOF'
+[Resolve]
+DNS=1.1.1.2#security.cloudflare-dns.com 1.0.0.2#security.cloudflare-dns.com 2606:4700:4700::1112#security.cloudflare-dns.com 2606:4700:4700::1002#security.cloudflare-dns.com
+DNSOverTLS=yes
+EOF
+    
+    # Restart systemd-resolved to apply changes
+    sudo systemctl restart systemd-resolved
+    
+    log "DNS over TLS configured with Cloudflare's security-focused DNS servers"
+    info "DNS queries will now be encrypted and use malware/phishing protection"
+}
+
+# Set up secure DNS
+setup_dns
+
 # zsh 
 setup_zsh() {
     log "Installing zsh and setting it as default shell..."
