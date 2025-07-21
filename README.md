@@ -14,8 +14,10 @@ An automated setup script for Fedora 42 that configures a complete development e
   - [🖥️ Terminal & Shell](#-terminal--shell)
   - [🌐 Browsers](#-browsers)
   - [💬 Communication](#-communication)
+  - [🎵 Media & Entertainment](#-media--entertainment)
   - [🎨 Creative & Productivity](#-creative--productivity)
   - [⚙️ System Enhancements](#-system-enhancements)
+  - [🔒 Security & Privacy](#-security--privacy)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [What the Script Does](#what-the-script-does)
@@ -23,6 +25,7 @@ An automated setup script for Fedora 42 that configures a complete development e
   - [Development Environment](#development-environment)
   - [Modern CLI Tools](#modern-cli-tools)
   - [Shell Configuration](#shell-configuration)
+  - [Application Installation](#application-installation)
 - [Post-Installation](#post-installation)
 - [References](#references)
 
@@ -34,9 +37,12 @@ An automated setup script for Fedora 42 that configures a complete development e
 
 - **Languages**: Python (with pyenv), Node.js (with Volta), Go, Rust
 - **Package Managers**: Poetry, pipx, npm
-- **Version Control**: Git with delta, GitHub CLI, GitLab CLI
+- **Version Control**: Git with delta, GitHub CLI, GitLab CLI, lazygit
 - **Containers**: Docker with ctop monitoring
 - **Cloud**: AWS CLI, Heroku CLI
+- **Go Tools**: gopls language server, golangci-lint
+- **Python Environment**: virtualenvwrapper for virtual environment management
+- **Development Libraries**: Comprehensive set including bzip2-devel, libffi-devel, openssl-devel, and more
 
 ### 📝 Editors & IDEs
 
@@ -50,7 +56,9 @@ An automated setup script for Fedora 42 that configures a complete development e
 - **Zsh** as default shell with enhanced configuration
 - **Starship** prompt for beautiful, informative shell prompts
 - **Modern CLI tools**: eza, bat, ripgrep, fd, fzf, zoxide, btop, procs
+- **Additional utilities**: ncdu, tokei, just, rclone, bandwhich
 - **Nerd Fonts**: JetBrains Mono, Fantasque Sans Mono, Cascadia Code
+- **Powerline fonts** for enhanced terminal experience
 
 ### 🌐 Browsers
 
@@ -62,18 +70,40 @@ An automated setup script for Fedora 42 that configures a complete development e
 - **Slack** (official RPM)
 - **Zoom** (automated download and installation)
 
+### 🎵 Media & Entertainment
+
+- **Spotify** (via lpf-spotify-client)
+- **VLC media player** with multimedia codecs
+- **Audacity** for audio editing
+- **Transmission** BitTorrent client
+- **yt-dlp** for video downloading
+
 ### 🎨 Creative & Productivity
 
 - **GIMP**, **Inkscape** for graphics
 - **Okular**, **Xournal++** for PDF handling
 - **EasyEffects** for audio processing
+- **Meld** for visual file/directory comparison
+- **Pandoc** for document conversion
+- **Thunar** alternative file manager
+- **Additional utilities**: screenkey, stacer, sqlitebrowser
 
 ### ⚙️ System Enhancements
 
 - **RPM Fusion** repositories
 - **Flathub** support
+- **DNS over TLS** configuration with Cloudflare for enhanced security
+- **DNF optimizations** (fastest mirror, parallel downloads)
 - **Terminal opacity** configuration
-- **GNOME** button layout customization
+- **GNOME** button layout and battery percentage customization
+- **Multimedia codec support** (ffmpeg, Intel media drivers)
+- **System cleanup** (removes totem, rhythmbox)
+
+### 🔒 Security & Privacy
+
+- **DNS over TLS** with Cloudflare's security-focused DNS servers
+- **Encrypted DNS queries** with malware/phishing protection
+- **Secure package verification** with proper GPG key management
 
 ## Prerequisites
 
@@ -104,17 +134,25 @@ An automated setup script for Fedora 42 that configures a complete development e
 ### Initial Setup
 
 1. Updates all system packages
-2. Installs and configures zsh as the default shell
-3. Sets up terminal opacity for better aesthetics
-4. Enables RPM Fusion repositories
+2. Optimizes DNF with fastest mirror and parallel downloads
+3. Sets up custom hostname (interactive)
+4. Configures DNS over TLS for enhanced security and privacy
+5. Installs and configures zsh as the default shell
+6. Sets up terminal opacity for better aesthetics
+7. Enables RPM Fusion repositories
+8. Configures multimedia codecs and Intel media drivers
 
 ### Development Environment
 
 1. Installs essential development tools and libraries
-2. Sets up Docker with user permissions
-3. Configures Node.js with Volta
-4. Installs Python development tools (pyenv, Poetry, virtualenvwrapper)
-5. Sets up Go and Rust development environments
+2. Sets up comprehensive build environment (C/C++, development tools)
+3. Configures Docker with user permissions
+4. Installs Node.js development tools with Volta
+5. Sets up Python development environment (pyenv, Poetry, virtualenvwrapper)
+6. Configures Go development environment with essential tools
+7. Installs Rust development environment
+8. Sets up cloud tools (AWS CLI, Heroku CLI)
+9. Installs version control enhancements (lazygit, delta)
 
 ### Modern CLI Tools
 
@@ -129,13 +167,29 @@ Replaces traditional Unix tools with modern, feature-rich alternatives:
 - `ps` → `procs` (modern process viewer)
 - `cd` → `zoxide` (smart directory jumping)
 
+Additional tools: ncdu, tokei, just, rclone, bandwhich
+
 ### Shell Configuration
 
 Creates a comprehensive `.zshrc` with:
 - Custom aliases for improved productivity
-- Useful functions (compression, PDF manipulation, etc.)
+- Useful functions (compression, PDF manipulation, file management, etc.)
 - Integration with all installed tools
 - Beautiful Starship prompt
+- Automatic node_modules/.bin PATH management
+- Enhanced completion systems
+
+### Application Installation
+
+Installs a comprehensive suite of applications:
+- **Editors**: Visual Studio Code, Zed, Vim with plugins, optional Cursor
+- **Media**: VLC, Audacity, Spotify, EasyEffects
+- **Graphics**: GIMP, Inkscape
+- **Productivity**: Okular, Xournal++, Meld, Pandoc
+- **Communication**: Slack, Zoom
+- **Development**: Docker, various language tools and IDEs
+- **System**: Thunar (I only use the bulk renamer tool 😃), screenkey, stacer, sqlitebrowser
+- **Network**: Transmission, yt-dlp, rclone
 
 ## Post-Installation
 
@@ -144,7 +198,20 @@ After running the script:
 1. **Reboot your system** for all changes to take effect
 2. **Open a new terminal** to start using zsh
 3. **Configure your terminal font** to use one of the installed Nerd Fonts
-4. **Customize further** based on your specific needs
+4. **Set up Git, SSH, GnuGPG, AWS-CLI, Heroku CLI**, and other things that need auth 
+5. **Follow the Firefox Configuration Steps:**
+   - **Enable Hardware Acceleration & WebRender:**
+     - Go to `about:config` in Firefox
+     - Set `layers.acceleration.force-enabled` → `true`
+     - Set `gfx.webrender.all` → `true`
+   - **Enable OpenH264 plugin:**
+     - Go to `about:addons` and select Plugins
+     - Enable the OpenH264 plugin
+     - Verify it's working: <https://mozilla.github.io/webrtc-landing/pc_test.html>
+   - **Install GNOME Vitals extension:**
+     - Visit: https://extensions.gnome.org/extension/1460/vitals/
+     - Install the extension in Firefox
+6. **Customize further** based on your specific needs
 
 ## References
 
