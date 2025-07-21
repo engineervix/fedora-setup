@@ -524,6 +524,9 @@ call plug#end()
 filetype plugin indent on
 syntax enable
 
+" Enable true colors support (required for Catppuccin)
+set termguicolors
+
 " Theme - with fallback if catppuccin_mocha isn't installed yet
 try
     set background=dark
