@@ -784,6 +784,12 @@ export PATH="$PATH:$HOME/.local/bin"
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
+# =============== pyenv ===============
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 # =============== virtualenvwrapper ===============
 export WORKON_HOME="$HOME/.virtualenvs"
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
