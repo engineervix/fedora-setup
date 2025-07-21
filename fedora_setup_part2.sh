@@ -842,7 +842,165 @@ alias ps='procs'
 alias cd='z'
 
 # Git (credits: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh)
+# =============== Git Aliases ===============
+# Essential git aliases adapted from ohmyzsh git plugin
+# These cover the most common git operations
 
+# Helper functions needed by aliases
+# Get current branch name
+function git_current_branch() {
+  git symbolic-ref --short -q HEAD
+}
+
+# Determine main branch (main, master, etc.)
+function git_main_branch() {
+  command git rev-parse --git-dir &>/dev/null || return
+  local ref
+  for ref in refs/{heads,remotes/{origin,upstream}}/{main,trunk,mainline,default,stable,master}; do
+    if command git show-ref -q --verify $ref; then
+      echo ${ref:t}
+      return 0
+    fi
+  done
+  echo master
+  return 1
+}
+
+# Check for develop and similarly named branches
+function git_develop_branch() {
+  command git rev-parse --git-dir &>/dev/null || return
+  local branch
+  for branch in dev devel develop development; do
+    if command git show-ref -q --verify refs/heads/$branch; then
+      echo $branch
+      return 0
+    fi
+  done
+  echo develop
+  return 1
+}
+
+# Basic operations
+alias g='git'
+alias gst='git status'
+alias gss='git status --short'
+alias ga='git add'
+alias gaa='git add --all'
+alias gapa='git add --patch'
+alias gc='git commit --verbose'
+alias gcmsg='git commit --message'
+alias gca='git commit --verbose --all'
+alias gc!='git commit --verbose --amend'
+alias gcan!='git commit --verbose --all --no-edit --amend'
+
+# Branching
+alias gb='git branch'
+alias gba='git branch --all'
+alias gbd='git branch --delete'
+alias gbD='git branch --delete --force'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gcm='git checkout $(git_main_branch)'
+alias gcp='git cherry-pick'
+
+# Diff and log
+alias gd='git diff'
+alias gds='git diff --staged'
+alias glog='git log --oneline --decorate --graph'
+alias gloga='git log --oneline --decorate --graph --all'
+alias glol='git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset"'
+
+# Remote operations
+alias gf='git fetch'
+alias gfa='git fetch --all --tags --prune'
+alias gfo='git fetch origin'
+alias gl='git pull'
+alias gpr='git pull --rebase'
+alias gp='git push'
+alias gpf='git push --force-with-lease'
+alias gpsup='git push --set-upstream origin $(git_current_branch)'
+alias ggpush='git push origin "$(git_current_branch)"'
+alias ggpull='git pull origin "$(git_current_branch)"'
+
+# ggp - push current branch to origin with flexibility
+function ggp() {
+  if [[ "$#" != 0 ]] && [[ "$#" != 1 ]]; then
+    git push origin "${*}"
+  else
+    [[ "$#" == 0 ]] && local b="$(git_current_branch)"
+    git push origin "${b:=$1}"
+  fi
+}
+compdef _git ggp=git-checkout
+
+# Stash
+alias gsta='git stash push'
+alias gstaa='git stash apply'
+alias gstp='git stash pop'
+alias gstl='git stash list'
+alias gstd='git stash drop'
+
+# Rebase
+alias grb='git rebase'
+alias grbi='git rebase --interactive'
+alias grbc='git rebase --continue'
+alias grba='git rebase --abort'
+alias grbm='git rebase $(git_main_branch)'
+
+# Reset
+alias grh='git reset'
+alias grhh='git reset --hard'
+alias groh='git reset origin/$(git_current_branch) --hard'
+alias gpristine='git reset --hard && git clean --force -dfx'
+
+# Merge
+alias gm='git merge'
+alias gma='git merge --abort'
+alias gmom='git merge origin/$(git_main_branch)'
+
+# Work in progress commit
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
+alias gunwip='git rev-list --max-count=1 --format="%s" HEAD | grep -q "\--wip--" && git reset HEAD~1'
+
+# Quick commit all with message
+alias gcam='git commit --all --message'
+
+# Show verbose remotes
+alias grv='git remote --verbose'
+
+# Clean up merged branches
+function gbda() {
+  git branch --no-color --merged | command grep -vE "^([+*]|\s*($(git_main_branch)|$(git_develop_branch))\s*$)" | command xargs git branch --delete 2>/dev/null
+}
+
+# Show a concise git log with graph (last 20 commits)
+alias glg='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit -20'
+
+# Interactive rebase of last N commits (usage: grbin 5)
+function grbin() {
+  git rebase -i HEAD~${1:-5}
+}
+
+# ggl - pull from origin with branch support
+function ggl() {
+  if [[ "$#" != 0 ]] && [[ "$#" != 1 ]]; then
+    git pull origin "${*}"
+  else
+    [[ "$#" == 0 ]] && local b="$(git_current_branch)"
+    git pull origin "${b:=$1}"
+  fi
+}
+compdef _git ggl=git-checkout
+
+# ggpnp - pull and push (fetch and update)
+function ggpnp() {
+  if [[ "$#" == 0 ]]; then
+    ggl && ggp
+  else
+    ggl "${*}" && ggp "${*}"
+  fi
+}
+compdef _git ggpnp=git-checkout
 
 # Docker (Credits: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/docker/docker.plugin.zsh)
 alias dbl='docker build'
