@@ -511,8 +511,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 
 " Color schemes
-Plug 'morhetz/gruvbox'
-Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 
 " Useful utilities
 Plug 'tpope/vim-surround'
@@ -525,13 +524,13 @@ call plug#end()
 filetype plugin indent on
 syntax enable
 
-" Theme - with fallback if gruvbox isn't installed yet
+" Theme - with fallback if catppuccin_mocha isn't installed yet
 try
     set background=dark
-    colorscheme gruvbox
-    let g:airline_theme='gruvbox'
+    colorscheme catppuccin_mocha
+    let g:airline_theme='catppuccin_mocha'
 catch /^Vim\%((\a\+)\)\=:E185/
-    " Fallback to default if gruvbox not available
+    " Fallback to default if catppuccin_mocha not available
     colorscheme default
     let g:airline_theme='dark'
 endtry
