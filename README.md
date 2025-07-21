@@ -1,6 +1,6 @@
 # Fedora Workstation Setup
 
-An automated setup script for Fedora 42 that configures a complete development environment with various tools, editors, and applications.
+An automated two-part setup script for Fedora 42 that configures a complete development environment with various tools, editors, and applications. The setup is split to ensure proper shell configuration with a required reboot between parts.
 
 [![ShellCheck](https://github.com/engineervix/fedora-setup/actions/workflows/main.yml/badge.svg)](https://github.com/engineervix/fedora-setup/actions/workflows/main.yml)
 
@@ -21,7 +21,8 @@ An automated setup script for Fedora 42 that configures a complete development e
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [What the Script Does](#what-the-script-does)
-  - [Initial Setup](#initial-setup)
+  - [Part 1 (`fedora_setup_part1.sh`) - Pre-reboot Setup](#part-1-fedora_setup_part1sh---pre-reboot-setup)
+  - [Part 2 (`fedora_setup_part2.sh`) - Main Setup](#part-2-fedora_setup_part2sh---main-setup)
   - [Development Environment](#development-environment)
   - [Modern CLI Tools](#modern-cli-tools)
   - [Shell Configuration](#shell-configuration)
@@ -110,37 +111,59 @@ An automated setup script for Fedora 42 that configures a complete development e
 - Fresh Fedora 42 installation
 - Internet connection
 - Sudo privileges
+- Ability to reboot the system after Part 1
 
 ## Installation
 
-1. **Download the script**:
+The setup is split into two parts with a required reboot in between to ensure the shell change to zsh takes full effect.
+
+1. **Download the scripts**:
    ```bash
    git clone https://github.com/engineervix/fedora-setup.git
    cd fedora-setup
    ```
 
-2. **Make it executable**:
+2. **Make scripts executable**:
    ```bash
-   chmod +x fedora_setup.sh
+   chmod +x fedora_setup_part1.sh fedora_setup_part2.sh
    ```
 
-3. **Run the setup**:
+3. **Run Part 1** (Initial setup and zsh installation):
    ```bash
-   ./fedora_setup.sh
+   ./fedora_setup_part1.sh
+   ```
+   The system will prompt you to reboot after completion.
+
+4. **After reboot, run Part 2** (Main installations and configurations):
+   ```bash
+   ./fedora_setup_part2.sh
    ```
 
 ## What the Script Does
 
-### Initial Setup
+The setup is divided into two parts to ensure proper shell configuration:
+
+### Part 1 (`fedora_setup_part1.sh`) - Pre-reboot Setup
 
 1. Updates all system packages
 2. Optimizes DNF with fastest mirror and parallel downloads
 3. Sets up custom hostname (interactive)
 4. Configures DNS over TLS for enhanced security and privacy
-5. Installs and configures zsh as the default shell
-6. Sets up terminal opacity for better aesthetics
-7. Enables RPM Fusion repositories
-8. Configures multimedia codecs and Intel media drivers
+5. **Installs and configures zsh as the default shell**
+6. Creates a marker file to track completion
+7. Prompts for system reboot
+
+**A reboot is required after Part 1 to ensure the shell change takes full effect.**
+
+### Part 2 (`fedora_setup_part2.sh`) - Main Setup
+
+After reboot, Part 2 continues with:
+
+1. Verifies Part 1 completion and zsh is active
+2. Configures terminal opacity for better aesthetics
+3. Enables RPM Fusion repositories
+4. Installs multimedia codecs and Intel media drivers
+5. Removes unnecessary applications (totem, rhythmbox)
 
 ### Development Environment
 
@@ -193,14 +216,13 @@ Installs a comprehensive suite of applications:
 
 ## Post-Installation
 
-After running the script:
+After running both parts of the script:
 
-1. **Reboot your system** for all changes to take effect
-2. **Open a new terminal** to start using zsh
-3. **Configure your terminal font** to use one of the installed Nerd Fonts
-4. **Complete Spotify installation** by running `lpf update`
-5. **Set up Git, SSH, GnuGPG, AWS-CLI, Heroku CLI**, and other things that need auth 
-6. **Follow the Firefox Configuration Steps:**
+1. **Open a new terminal** to start using zsh with all features
+2. **Configure your terminal font** to use one of the installed Nerd Fonts
+3. **Complete Spotify installation** by running `lpf update`
+4. **Set up Git, SSH, GnuGPG, AWS-CLI, Heroku CLI**, and other things that need auth 
+5. **Follow the Firefox Configuration Steps:**
    - **Enable Hardware Acceleration & WebRender:**
      - Go to `about:config` in Firefox
      - Set `layers.acceleration.force-enabled` → `true`
@@ -212,7 +234,7 @@ After running the script:
    - **Install GNOME Vitals extension:**
      - Visit: https://extensions.gnome.org/extension/1460/vitals/
      - Install the extension in Firefox
-7. **Customize further** based on your specific needs
+6. **Customize further** based on your specific needs
 
 ## References
 
