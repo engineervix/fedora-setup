@@ -16,7 +16,7 @@ set -e  # Exit immediately if any command fails
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Logging function
@@ -33,7 +33,7 @@ error() {
 }
 
 info() {
-    echo -e "${BLUE}[INFO] $1${NC}"
+    echo -e "${CYAN}[INFO] $1${NC}"
 }
 
 # Check if part 1 was completed
