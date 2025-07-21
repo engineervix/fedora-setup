@@ -918,14 +918,18 @@ echo
 warn "Note: You'll need to log out and back in for the shell change to take full effect"
 echo
 info "Enjoy your new Fedora development environment! 🚀"
-
-# Enable Firefox Hardware Acceleration & WebRender:
-# In Firefox, go to about:config and set:
-# layers.acceleration.force-enabled → true
-# gfx.webrender.all → true
-
-# open Firefox and go to about:addons and select Plugins. 
-# Enable the OpenH264 plugin. 
-# [Verify](https://mozilla.github.io/webrtc-landing/pc_test.html) the plugin is working correctly.
-
-# Install https://extensions.gnome.org/extension/1460/vitals/ in Firefox
+echo
+info "Additional Firefox Configuration Steps:"
+info "1. Enable Hardware Acceleration & WebRender:"
+info "   - Go to about:config in Firefox"
+info "   - Set layers.acceleration.force-enabled → true"
+info "   - Set gfx.webrender.all → true"
+echo
+info "2. Enable OpenH264 plugin:"
+info "   - Go to about:addons and select Plugins"
+info "   - Enable the OpenH264 plugin"
+info "   - Verify it's working: https://mozilla.github.io/webrtc-landing/pc_test.html"
+echo
+info "3. Install GNOME Vitals extension:"
+info "   - Visit: https://extensions.gnome.org/extension/1460/vitals/"
+info "   - Install the extension in Firefox"
