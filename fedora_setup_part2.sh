@@ -322,17 +322,17 @@ async function downloadZoomForFedora() {
     await page.goto('https://zoom.us/download?os=linux');
 
     // Handle cookie banner
-    await page.getByRole('button', { name: 'Decline Cookies' }).click();
+    await page.getByRole('button', { name: 'Accept Cookies' }).click();
 
     // Click to open the Linux distribution dropdown
-    await page.getByLabel('Show options').click();
+    await page.getByText('Please Select a Linux type').click();
 
     // Select Fedora
     await page.getByText('Fedora').click();
 
     // Start download
+    await page.getByRole('button', { name: 'Download Zoom Workplace desktop app for Linux' }).click();
     const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('link', { name: 'Download Zoom Workplace' }).click();
 
     // Wait for download to start and save with original filename
     const download = await downloadPromise;
