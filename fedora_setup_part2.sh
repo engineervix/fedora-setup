@@ -124,7 +124,7 @@ sudo dnf remove -y \
 
 # Various tools
 log "Installing some essential utilities, tools & applications ..."
-sudo dnf install -y \
+sudo dnf install --skip-unavailable -y \
     aspell \
     audacity \
     btop \
