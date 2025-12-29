@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =================================================================================================
-# description:  Fedora 42 setup script - Part 2: Main setup after reboot
+# description:  Fedora 42+ setup script - Part 2: Main setup after reboot
 # author:       Victor Miti <https://github.com/engineervix>
 # url:          <https://github.com/engineervix/fedora-setup>
 # version:      1.0.0
@@ -35,6 +35,7 @@ error() {
 info() {
     echo -e "${CYAN}[INFO] $1${NC}"
 }
+FEDORA_VERSION=$(rpm -E %fedora)
 
 # Check if part 1 was completed
 if [ ! -f "$HOME/.fedora_setup_part1_complete" ]; then
@@ -51,7 +52,7 @@ if [ "$SHELL" != "$(which zsh)" ]; then
     info "Expected shell: $(which zsh)"
 fi
 
-log "Starting Fedora 42 Developer Setup - Part 2..."
+log "Starting Fedora $FEDORA_VERSION Developer Setup - Part 2..."
 
 # Get the default profile UUID
 profile_uuid=$(dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d "'")

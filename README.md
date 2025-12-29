@@ -1,6 +1,10 @@
 # Fedora Workstation Setup
 
-An automated two-part setup script for Fedora 42 that configures a complete development environment with various tools, editors, and applications. The setup is split to ensure proper shell configuration with a required reboot between parts.
+An automated two-part setup script for Fedora 42/43 that configures a complete development environment with various tools, editors, and applications. The setup is split to ensure proper shell configuration with a required reboot between parts.
+
+> [!NOTE]  
+> As of 2025-12-29, some packages (e.g. [stacer](https://packages.fedoraproject.org/pkgs/stacer/stacer/index.html), [fros-gnome](https://packages.fedoraproject.org/pkgs/fros/fros-gnome/index.html)) didn't have Fedora 43 installation candidates.
+> This is why I added the `--skip-unavailable` flag to the DNF install command in a2d6b65b9042142cd4666f014e8174afaba6d58c
 
 [![ShellCheck](https://github.com/engineervix/fedora-setup/actions/workflows/main.yml/badge.svg)](https://github.com/engineervix/fedora-setup/actions/workflows/main.yml)
 
@@ -108,7 +112,7 @@ An automated two-part setup script for Fedora 42 that configures a complete deve
 
 ## Prerequisites
 
-- Fresh Fedora 42 installation
+- Fresh Fedora 42 (or 43) installation
 - Internet connection
 - Sudo privileges
 - Ability to reboot the system after Part 1

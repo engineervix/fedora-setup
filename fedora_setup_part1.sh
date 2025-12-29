@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =================================================================================================
-# description:  Fedora 42 setup script - Part 1: Initial setup and zsh installation
+# description:  Fedora 42+ setup script - Part 1: Initial setup and zsh installation
 # author:       Victor Miti <https://github.com/engineervix>
 # url:          <https://github.com/engineervix/fedora-setup>
 # version:      1.0.0
@@ -36,7 +36,8 @@ info() {
     echo -e "${CYAN}[INFO] $1${NC}"
 }
 
-log "Starting Fedora 42 Developer Setup - Part 1..."
+FEDORA_VERSION=$(rpm -E %fedora)
+log "Starting Fedora $FEDORA_VERSION Developer Setup - Part 1..."
 
 # Speed up dnf
 log "Optimizing DNF configuration for faster downloads..."
